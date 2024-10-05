@@ -1,0 +1,112 @@
+{
+	"info": {
+		"_postman_id": "63b63636-edbf-41af-aea5-7e6a7b111d96",
+		"name": "shopee-postman",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "32652057"
+	},
+	"item": [
+		{
+			"name": "create-category",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJkZXZ0ZXJpYS5jb20iLCJzdWIiOiJhZG1pbiIsImV4cCI6MTcyMjQxNjA0NiwiaWF0IjoxNzIyNDEyNDQ2LCJzY29wZSI6IkFETUlOIn0.P_ir1tgBD5gFxMFJEhd6iotRu_ZpqE9yV9fb0r5nD9j7KcKFQ044WOTR_1WbpOD9v3419zog3RhOeSK7-uSzJQ",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n   \"name\": \"Laptop\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/admin/categories",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"admin",
+						"categories"
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "nxq",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get-all-categories",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/public/categories",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"public",
+						"categories"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get-category-by-id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/public/categories/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"public",
+						"categories",
+						""
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

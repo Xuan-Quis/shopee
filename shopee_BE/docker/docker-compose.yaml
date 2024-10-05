@@ -1,0 +1,16 @@
+version: '3.8'
+services:
+  db:
+    image: mysql:8.0
+    container_name: mysql_shopee
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: admin
+      MYSQL_DATABASE: shopee
+      # đổi tên tùy thích,user, pw giống file application.yaml
+      MYSQL_USER: springstudent
+      MYSQL_PASSWORD: springstudent
+    ports:
+      - "3309:3306"
+    volumes:
+      - /usr/local/var/mysql:/var/lib/mysql
