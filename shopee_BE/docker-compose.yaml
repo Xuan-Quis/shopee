@@ -1,0 +1,18 @@
+version: '3.8'
+services:
+
+  app-backend:
+    image: shopee-be:v1
+    ports:
+      - "8080:8080"
+    container_name: shopee-be
+    restart: always
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql_shopee:3309/shopee  # Kết nối tới MySQL
+      SPRING_DATASOURCE_USERNAME: springstudent
+      SPRING_DATASOURCE_PASSWORD: springstudent
+    networks:
+      - shopee-network
+networks:
+  shopee-network:
+    driver: bridge

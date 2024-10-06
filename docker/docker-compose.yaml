@@ -1,0 +1,41 @@
+version: '3.8'
+services:
+  db:
+    image: mysql:8.0
+    container_name: mysql_shopee
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: admin
+      MYSQL_DATABASE: shopee
+      # đổi tên tùy thích,user, pw giống file application.yaml
+      MYSQL_USER: springstudent
+      MYSQL_PASSWORD: springstudent
+    ports:
+      - "3309:3306"
+    volumes:
+      - /usr/local/var/mysql:/var/lib/mysql
+    networks:
+      - shopee-network
+  app-backend:
+    image: shopee-be:v1
+    ports:
+      - "8080:8080"
+    container_name: shopee-be
+    restart: always
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql_shopee:3306/shopee  # Kết nối tới MySQL
+      SPRING_DATASOURCE_USERNAME: springstudent
+      SPRING_DATASOURCE_PASSWORD: springstudent
+    networks:
+      - shopee-network
+  app-frontend:
+    image: shopee-fe:v1
+    ports:
+      - "3000:80"
+    container_name: shopee-fe
+    restart: always
+    networks:
+      - shopee-network
+networks:
+  shopee-network:
+    driver: bridge

@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.actvn</groupId>
-	<artifactId>shopee_BE</artifactId>
+	<artifactId>shopee-be</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>Shopee_BE</name>
+	<name>shopee-be</name>
 	<description>Demo project for Spring Boot</description>
 	<url/>
 	<licenses>
@@ -43,6 +43,10 @@
 			<groupId>com.mysql</groupId>
 			<artifactId>mysql-connector-j</artifactId>
 			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jdbc</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.projectlombok</groupId>
