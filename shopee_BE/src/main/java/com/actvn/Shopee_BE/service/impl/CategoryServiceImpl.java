@@ -1,6 +1,7 @@
 package com.actvn.Shopee_BE.service.impl;
 
 import com.actvn.Shopee_BE.dto.request.CategoryRequest;
+import com.actvn.Shopee_BE.exception.NotFoundException;
 import com.actvn.Shopee_BE.mapper.EntityDtoMapper;
 import com.actvn.Shopee_BE.repository.CategoryRepository;
 import com.actvn.Shopee_BE.service.CategoryService;
@@ -55,8 +56,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public ApiResponse getCategoryById(String id) {
-        Category foundCategory = categoryRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Category with "+id+" not found"));
+        Category foundCategory = finCategoryById(id);
 
         return ApiResponse.builder()
                 .status(HttpStatus.OK)
@@ -67,25 +67,25 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public ApiResponse updateCategory(CategoryRequest categoryRequest, String id) {
-        Category category = categoryRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Category with "+id+" not found"));
+        Category category = finCategoryById(id);
         category.setName(categoryRequest.getName());
         Category updated = categoryRepository.save(category);
-
         return ApiResponse.builder()
                 .message("Successfully update")
                 .build();
     }
     @Override
     public ApiResponse deleteCategory(String id) {
-        Category category = categoryRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Category with "+id+" not found"));
-        categoryRepository.delete(category);
+        categoryRepository.delete(finCategoryById(id));
         return ApiResponse.builder()
                 .message("Successfully deleted Category")
                 .status(HttpStatus.OK)
                 .build();
     }
 
-
+    private Category finCategoryById(String id) {
+        Category category = categoryRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Category with "+id+" not found"));
+        return category;
+    }
 }
