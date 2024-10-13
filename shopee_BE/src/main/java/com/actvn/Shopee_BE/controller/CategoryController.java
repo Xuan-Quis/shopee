@@ -1,5 +1,6 @@
 package com.actvn.Shopee_BE.controller;
 
+import com.actvn.Shopee_BE.common.Constants;
 import com.actvn.Shopee_BE.dto.request.CategoryRequest;
 import com.actvn.Shopee_BE.entity.Category;
 import com.actvn.Shopee_BE.service.CategoryService;
@@ -20,8 +21,12 @@ public class CategoryController {
     CategoryService categoryService;
 
     @GetMapping("/public/categories")
-    public ApiResponse getCategories(){
-        return categoryService.getAllCategories();
+    public ApiResponse getCategories(@RequestParam(value = "pageNumber",defaultValue = Constants.PAGE_NUMBER, required = false) Integer pageNumber,
+                                     @RequestParam(value = "pageSize",defaultValue = Constants.PAGE_SIZE, required = false) Integer pageSize,
+                                     @RequestParam(value = "sortBy", defaultValue = Constants.CATEGORY_SORT_BY, required = false) String sortBy,
+                                     @RequestParam(value = "sortOrder", defaultValue = Constants.CATEGORY_SORT_BY_ORDER, required = false) String sortOrder
+    ){
+        return categoryService.getAllCategories(pageNumber, pageSize, sortBy, sortOrder);
     }
 
     @GetMapping("/public/categories/{id}")
