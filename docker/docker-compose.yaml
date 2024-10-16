@@ -26,6 +26,8 @@ services:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql_shopee:3306/shopee  # Kết nối tới MySQL
       SPRING_DATASOURCE_USERNAME: springstudent
       SPRING_DATASOURCE_PASSWORD: springstudent
+    depends_on:     # thuộc tính giúp app-backend luôn khởi động sau db
+      - db
     networks:
       - shopee-network
   app-frontend:
@@ -38,4 +40,5 @@ services:
       - shopee-network
 networks:
   shopee-network:
+    name: shopee-app
     driver: bridge
