@@ -1,5 +1,6 @@
 package com.actvn.Shopee_BE.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -19,6 +20,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "category")
+//@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -30,6 +32,7 @@ public class Category {
     @Column(name = "Create_at")
     private final LocalDateTime createAt = LocalDateTime.now();
 
-    @OneToMany(mappedBy = "category", cascade = {CascadeType.ALL})
-    private List<Product> products;
+//    @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
+//    @JoinColumn(name = "category_id")
+//    private List<Product> products;
 }

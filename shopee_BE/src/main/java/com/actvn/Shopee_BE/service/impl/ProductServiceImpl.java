@@ -1,13 +1,24 @@
 package com.actvn.Shopee_BE.service.impl;
 
+import com.actvn.Shopee_BE.common.Constants;
 import com.actvn.Shopee_BE.dto.request.ProductRequest;
+import com.actvn.Shopee_BE.dto.response.ApiResponse;
+import com.actvn.Shopee_BE.dto.response.CategoryResponse;
+import com.actvn.Shopee_BE.dto.response.ProductItemResponse;
+import com.actvn.Shopee_BE.dto.response.ProductResponse;
 import com.actvn.Shopee_BE.entity.Category;
 import com.actvn.Shopee_BE.entity.Product;
 import com.actvn.Shopee_BE.exception.NotFoundException;
 import com.actvn.Shopee_BE.repository.CategoryRepository;
 import com.actvn.Shopee_BE.repository.ProductRepository;
 import com.actvn.Shopee_BE.service.ProductService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -20,6 +31,10 @@ public class ProductServiceImpl implements ProductService {
     private ProductRepository productRepository;
     @Autowired
     private CategoryRepository categoryRepository;
+
+    private ModelMapper modelMapper = new ModelMapper();
+
+
     @Override
     public Product createNewProduct(ProductRequest productRequest, String categoryId) {
         Category category = categoryRepository.findById(categoryId).orElseThrow(()->{
@@ -29,28 +44,79 @@ public class ProductServiceImpl implements ProductService {
                 - (productRequest.getDiscount() * 0.01)*productRequest.getPrice();
         productRequest.setPrice(price);
 
-        Product product = new Product();
-        product.setCategory(category);
-        product.setPrice(price);
-        product.setDiscount(productRequest.getDiscount());
-        product.setDescription(productRequest.getDescription());
-        product.setImage(productRequest.getImage());
-        product.setQuantity(productRequest.getQuantity());
+        Product product = Product.builder()
+                .productName(productRequest.getProductName())
+                .description(productRequest.getDescription())
+                .category(category)
+                .discount(productRequest.getDiscount())
+                .price(price)
+                .image(productRequest.getImage())
+                .quantity(productRequest.getQuantity())
+                .specialPrice(productRequest.getSpecialPrice())
+                .build();
 
         Product savedProduct = productRepository.save(product);
         return savedProduct;
     }
 
     @Override
-    public List<Product> getAllProducts(String categoryId) {
-        List<Product> products = productRepository.findAll();
-        List<Product> filteredProducts = products.stream().filter(
-                (s) ->{
-                    return s.getCategory().getId().equals(categoryId);
-                }
-        ).toList();
+    public ApiResponse getAllProductsByCategoryId(String categoryId, int pageNumber, int pageSize, String sortBy, String sortOrder) {
+        Sort sortByAndOrder = sortOrder.equals(Constants.SORT_BY_ORDER)
+                ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
 
-//        return productRepository.findAllByCategoryId(categoryId);
-        return products;
+        Pageable pageable = PageRequest.of(pageNumber,pageSize, sortByAndOrder);
+
+        Category category = categoryRepository.findById(categoryId).orElseThrow(()->{
+            throw new NotFoundException("Not found category with id: " + categoryId);
+        });
+
+        List<Product> products = productRepository.findByCategoryOrderByPriceAsc(category);
+
+        List<ProductItemResponse> list = products.stream().map(product ->
+                modelMapper.map(product, ProductItemResponse.class))
+                .toList();
+
+        return ApiResponse
+                .builder()
+                .message("Get all products by category id:"+ categoryId)
+                .body(list)
+                .status(HttpStatus.OK)
+                .build();
     }
+
+    @Override
+    public ApiResponse getProductByKeyword(String keyword, int pageNumber, int pageSize, String sortBy, String sortOrder) {
+        Sort sortByAndOrder = sortOrder.equals(Constants.SORT_BY_ORDER)
+                ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+
+        Pageable pageable = PageRequest.of(pageNumber,pageSize, sortByAndOrder);
+
+
+        Page<Product> productPage = productRepository.findProductByProductNameLike('%'+keyword+'%', pageable);
+
+        List<Product> products = productPage.getContent();
+
+        List<ProductItemResponse> list = products.stream().map(product ->
+                modelMapper.map(product, ProductItemResponse.class))
+                .toList();
+
+        ProductResponse categoryResponse = new ProductResponse();
+        categoryResponse.setCategories(list);
+        categoryResponse.setPageNumber(productPage.getNumber());
+        categoryResponse.setPageSize(productPage.getSize());
+        categoryResponse.setTotalPages(productPage.getTotalPages());
+        categoryResponse.setTotalElements(productPage.getTotalElements());
+        categoryResponse.setLastPage(productPage.isLast());
+        categoryResponse.setFirstPage(productPage.isFirst());
+
+        products.forEach(System.out::println);
+        return ApiResponse
+                .builder()
+                .message("Get all products have "+ keyword)
+                .body(categoryResponse)
+                .status(HttpStatus.OK)
+                .build();
+    }
+
+
 }

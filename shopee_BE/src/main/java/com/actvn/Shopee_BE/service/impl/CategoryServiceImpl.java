@@ -33,7 +33,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public ApiResponse getAllCategories(int pageNumber, int pageSize, String sortBy, String sortOrder ) {
-        Sort sortByAndOrder = sortOrder.equals(Constants.CATEGORY_SORT_BY_ORDER)
+        Sort sortByAndOrder = sortOrder.equals(Constants.SORT_BY_ORDER)
                 ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
 
         Pageable pageable = PageRequest.of(pageNumber,pageSize, sortByAndOrder);
@@ -77,7 +77,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public ApiResponse getCategoryById(String id) {
-        Category foundCategory = finCategoryById(id);
+        Category foundCategory = findCategoryById(id);
 
         return ApiResponse.builder()
                 .status(HttpStatus.OK)
@@ -88,7 +88,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public ApiResponse updateCategory(CategoryRequest categoryRequest, String id) {
-        Category category = finCategoryById(id);
+        Category category = findCategoryById(id);
         category.setName(categoryRequest.getName());
         Category updated = categoryRepository.save(category);
         return ApiResponse.builder()
@@ -97,16 +97,18 @@ public class CategoryServiceImpl implements CategoryService {
     }
     @Override
     public ApiResponse deleteCategory(String id) {
-        categoryRepository.delete(finCategoryById(id));
+        categoryRepository.delete(findCategoryById(id));
         return ApiResponse.builder()
                 .message("Successfully deleted Category")
                 .status(HttpStatus.OK)
                 .build();
     }
 
-    private Category finCategoryById(String id) {
+    private Category findCategoryById(String id) {
         Category category = categoryRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Category with "+id+" not found"));
         return category;
     }
+
+
 }

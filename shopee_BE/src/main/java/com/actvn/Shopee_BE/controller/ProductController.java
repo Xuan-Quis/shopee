@@ -6,6 +6,7 @@ import com.actvn.Shopee_BE.dto.response.ApiResponse;
 import com.actvn.Shopee_BE.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RequestMapping("/api")
@@ -25,19 +26,44 @@ public class ProductController {
                 .status(HttpStatus.CREATED)
                 .build();
     }
-    @GetMapping("/admin/categories/{categoryId}/product")
-    public ApiResponse getProducts(@PathVariable("categoryId") String categoryId,
-                                   @RequestParam(value = "pageNumber",defaultValue = Constants.PAGE_NUMBER, required = false) Integer pageNumber,
-                                   @RequestParam(value = "pageSize",defaultValue = Constants.PAGE_SIZE, required = false) Integer pageSize,
-                                   @RequestParam(value = "sortBy", defaultValue = Constants.CATEGORY_SORT_BY, required = false) String sortBy,
-                                   @RequestParam(value = "sortOrder", defaultValue = Constants.CATEGORY_SORT_BY_ORDER, required = false) String sortOrder
+    @GetMapping("/public/categories/{categoryId}/product")
+    public ResponseEntity<ApiResponse> getProductsByCategory(@PathVariable("categoryId") String categoryId,
+                                                @RequestParam(value = "pageNumber",defaultValue = Constants.PAGE_NUMBER, required = false) Integer pageNumber,
+                                                             @RequestParam(value = "pageSize",defaultValue = Constants.PAGE_SIZE, required = false) Integer pageSize,
+                                                             @RequestParam(value = "sortBy", defaultValue = Constants.CATEGORY_SORT_BY, required = false) String sortBy,
+                                                             @RequestParam(value = "sortOrder", defaultValue = Constants.SORT_BY_ORDER, required = false) String sortOrder
                                    ){
+        if(pageNumber < 1){
+            pageNumber = 1;
+        }
+        return ResponseEntity.ok(productService.getAllProductsByCategoryId(categoryId, pageNumber, pageSize, sortBy, sortOrder));
+    }
 
-        return ApiResponse.builder()
-                .body(productService.getAllProducts(categoryId))
-                .build();
+    @GetMapping("/public/products/keyword/{keyword}")
+    public ResponseEntity<ApiResponse> getProductByKeyword(@PathVariable String keyword,
+                                                           @RequestParam(value = "pageNumber",defaultValue = Constants.PAGE_NUMBER, required = false) Integer pageNumber,
+                                                           @RequestParam(value = "pageSize",defaultValue = Constants.PAGE_SIZE, required = false) Integer pageSize,
+                                                           @RequestParam(value = "sortBy", defaultValue = Constants.PRODUCT_SORT_BY, required = false) String sortBy,
+                                                           @RequestParam(value = "sortOrder", defaultValue = Constants.SORT_BY_ORDER, required = false) String sortOrder
+                                                           ){
+        if(pageNumber < 1){
+            pageNumber = 1;
+        }
+        return ResponseEntity.status(HttpStatus.OK).
+                body(productService.getProductByKeyword(keyword,pageNumber-1,pageSize,sortBy,sortOrder ));
+
     }
 
 
-
 }
+
+
+
+
+
+
+
+
+
+
+

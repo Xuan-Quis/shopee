@@ -24,9 +24,12 @@ public class CategoryController {
     public ApiResponse getCategories(@RequestParam(value = "pageNumber",defaultValue = Constants.PAGE_NUMBER, required = false) Integer pageNumber,
                                      @RequestParam(value = "pageSize",defaultValue = Constants.PAGE_SIZE, required = false) Integer pageSize,
                                      @RequestParam(value = "sortBy", defaultValue = Constants.CATEGORY_SORT_BY, required = false) String sortBy,
-                                     @RequestParam(value = "sortOrder", defaultValue = Constants.CATEGORY_SORT_BY_ORDER, required = false) String sortOrder
+                                     @RequestParam(value = "sortOrder", defaultValue = Constants.SORT_BY_ORDER, required = false) String sortOrder
     ){
-        return categoryService.getAllCategories(pageNumber, pageSize, sortBy, sortOrder);
+        if(pageNumber < 1){
+            pageNumber = 1;
+        }
+        return categoryService.getAllCategories(pageNumber -1, pageSize, sortBy, sortOrder);
     }
 
     @GetMapping("/public/categories/{id}")
