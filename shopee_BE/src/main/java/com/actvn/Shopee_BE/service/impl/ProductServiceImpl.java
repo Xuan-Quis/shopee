@@ -11,16 +11,21 @@ import com.actvn.Shopee_BE.entity.Product;
 import com.actvn.Shopee_BE.exception.NotFoundException;
 import com.actvn.Shopee_BE.repository.CategoryRepository;
 import com.actvn.Shopee_BE.repository.ProductRepository;
+import com.actvn.Shopee_BE.service.FileService;
 import com.actvn.Shopee_BE.service.ProductService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,8 +36,14 @@ public class ProductServiceImpl implements ProductService {
     private ProductRepository productRepository;
     @Autowired
     private CategoryRepository categoryRepository;
+    @Autowired
+    private FileService fileService;
 
-    private ModelMapper modelMapper = new ModelMapper();
+    @Value("${project.image}")
+    private String path;
+
+    @Autowired
+    private ModelMapper modelMapper;
 
 
     @Override
@@ -118,5 +129,34 @@ public class ProductServiceImpl implements ProductService {
                 .build();
     }
 
+    @Override
+    public ApiResponse updateProductImage(String productId, MultipartFile image) {
+        Product product = findProductById(productId);
+        String imagePath;
+        try {
+            imagePath = fileService.uploadImage(path, image);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        product.setImage(imagePath);
+        productRepository.save(product);
+        return ApiResponse.builder()
+                .message("Product updated")
+                .body(modelMapper.map(product, ProductItemResponse.class))
+                .status(HttpStatus.OK)
+                .build();
+    }
 
+    private Product findProductById(String productId) {
+        return productRepository.findById(productId).orElseThrow(
+                () -> new NotFoundException("Not found product with id: " + productId)
+        );
+    }
+
+    private Category findCategory(String categoryId) {
+        Category category = categoryRepository.findById(categoryId).orElseThrow(()->{
+            throw new NotFoundException("Not found category with id: " + categoryId);
+        });
+        return category;
+    }
 }

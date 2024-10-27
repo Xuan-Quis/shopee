@@ -5,9 +5,11 @@ import com.actvn.Shopee_BE.dto.request.ProductRequest;
 import com.actvn.Shopee_BE.dto.response.ApiResponse;
 import com.actvn.Shopee_BE.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RequestMapping("/api")
 @RestController()
@@ -54,6 +56,13 @@ public class ProductController {
 
     }
 
+    @PutMapping("/admin/product/{productId}/image")
+    public ResponseEntity<ApiResponse> updateProductImage(@PathVariable String productId, @RequestParam("image") MultipartFile image){
+
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(productService.updateProductImage(productId, image));
+    }
 
 }
 

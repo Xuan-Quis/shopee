@@ -11,6 +11,7 @@ import com.actvn.Shopee_BE.dto.response.ApiResponse;
 import com.actvn.Shopee_BE.dto.response.CategoryItemResponse;
 import com.actvn.Shopee_BE.entity.Category;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -30,6 +31,8 @@ public class CategoryServiceImpl implements CategoryService {
     private CategoryRepository categoryRepository;
     @Autowired
     private EntityDtoMapper mapper;
+    @Autowired
+    private ModelMapper modelMapper;
 
     @Override
     public ApiResponse getAllCategories(int pageNumber, int pageSize, String sortBy, String sortOrder ) {
@@ -43,7 +46,7 @@ public class CategoryServiceImpl implements CategoryService {
 
 
         List<CategoryItemResponse> list = categories.stream()
-                .map(mapper::mapCategoryToDto)
+                .map((ctg)->modelMapper.map(ctg,CategoryItemResponse.class))
                 .collect(Collectors.toList());
 
 
