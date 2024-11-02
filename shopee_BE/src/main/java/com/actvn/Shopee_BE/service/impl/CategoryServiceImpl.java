@@ -93,7 +93,7 @@ public class CategoryServiceImpl implements CategoryService {
     public ApiResponse updateCategory(CategoryRequest categoryRequest, String id) {
         Category category = findCategoryById(id);
         category.setName(categoryRequest.getName());
-        Category updated = categoryRepository.save(category);
+//        Category updated = categoryRepository.save(category);
         return ApiResponse.builder()
                 .message("Successfully update")
                 .build();
