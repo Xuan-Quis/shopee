@@ -71,10 +71,11 @@ public class CategoryServiceImpl implements CategoryService {
         Category category = new Category();
         category.setName(categoryRequest.getName());
         Category created = categoryRepository.save(category);
+
         return ApiResponse.builder()
                 .status(HttpStatus.CREATED)
                 .message("Category created successfully")
-                .body( mapper.mapCategoryToDto(category))
+                .body( modelMapper.map(category, CategoryResponse.class))
                 .build();
     }
 

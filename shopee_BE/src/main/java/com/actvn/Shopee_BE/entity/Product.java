@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 @Builder
 @Table(name= "products")
 public class Product {
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;

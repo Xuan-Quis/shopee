@@ -10,5 +10,7 @@ import org.springframework.stereotype.Repository;
 public interface CategoryRepository extends JpaRepository<Category, String> {
     @Override
     Page<Category> findAll(Pageable pageable);
+
+
 }
 

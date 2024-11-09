@@ -40,6 +40,11 @@ public class ProductController {
         }
         return ResponseEntity.ok(productService.getAllProductsByCategoryId(categoryId, pageNumber, pageSize, sortBy, sortOrder));
     }
+    @GetMapping("/public/products/{productId}")
+    public ResponseEntity<ApiResponse> getProductById(@PathVariable("productId") String productId){
+        return null;
+    }
+
 
     @GetMapping("/public/products/keyword/{keyword}")
     public ResponseEntity<ApiResponse> getProductByKeyword(@PathVariable String keyword,

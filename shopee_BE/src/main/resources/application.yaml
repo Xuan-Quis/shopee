@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: "jdbc:mysql://localhost:3309/shopee"
+    url: "jdbc:mysql://localhost:3308/shopee"
     username: springstudent
     password: springstudent
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -15,6 +15,12 @@ spring:
     multipart:
       max-file-size: 10MB
       max-request-size: 15MB
-
+#  security:
+#    user:
+#      name: admin
+#      password: admin@123
+  app:
+    jwtSecret: JwNaAabf8jVEPAD+cpoSgYLukges1KRWEKnDF+XY5QfGO55I9lCzxyqtUyLw5G8q
+    jwtExpiration: 300000
 project:
   image: "images/"
