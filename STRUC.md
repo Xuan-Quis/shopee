@@ -1,3 +1,4 @@
+
 # Cơ sở dữ liệu trong hệ thống — Block 1 và toàn bộ stack
 
 Block 1 **không dùng MySQL/PostgreSQL/SQLite**. Tri thức CVE được lưu theo mô hình **Polyglot Persistence** (nhiều loại kho phù hợp từng loại dữ liệu). Dưới đây là bản đồ đầy đủ để bạn trả lời hội đồng khi hỏi *"DB ở đâu?"*.
@@ -247,6 +248,30 @@ Một request `recon/full` = **recon + vuln** trong một response lớn.
 ---
 
 ## 4. Luồng chi tiết `POST /api/v1/recon/full`
+```mermaid
+sequenceDiagram
+    autonumber
+    actor GW as Gateway
+    participant B3 as Block 3
+    participant OAI as OpenAI
+    participant B2 as Block 2
+    participant B1 as Block 1 VM
+
+    GW->>B3: POST /pentest mode=deep
+    B3->>OAI: Surface + Plan
+    OAI-->>B3: seeds, plan
+    B3->>B2: Recon (profile deep)
+    B2-->>B3: rule findings
+    loop Probe (≤3 vòng)
+        B3->>OAI: Detect → tests
+        B3->>B2: Targeted probe
+        B2-->>B3: kết quả mới
+    end
+    B3->>B2: CVE batch intel
+    B3->>B1: RAG enrich top-N
+    B3-->>GW: JSON + risk_score
+
+```
 
 ```mermaid
 sequenceDiagram
